@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  unifi-protect:
+    image: markdegroot/unifi-protect-arm64
+    container_name: unifi-protect
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /storage/srv:/srv
+      - /storage/data:/data
+    restart: unless-stopped
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    privileged: true
+    network_mode: host
