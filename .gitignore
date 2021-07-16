@@ -1,1 +1,2 @@
-put-unifi-core-deb-here
+put-deb-files-here/*.deb
+put-version-file-here/version

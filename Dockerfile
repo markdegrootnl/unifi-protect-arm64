@@ -15,6 +15,8 @@ RUN apt-get update \
         gnupg \
         apt-transport-https \
         ca-certificates \
+        dirmngr \
+        mdadm \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
@@ -38,21 +40,21 @@ RUN apt-get update \
     && sed -i 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y dirmngr
+COPY put-deb-files-here/*.deb files/postgresql.sh /
+COPY put-version-file-here/version /usr/lib/version
 
-COPY put-unifi-core-deb-here/*.deb files/ /
-
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 379CE192D401AB61 \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install /*.deb unifi-protect \
+RUN apt-get update \
+    && apt-get -y --no-install-recommends install /*.deb \
     && rm -f /*.deb \
     && rm -rf /var/lib/apt/lists/* \
-    && /usr/local/sbin/postgresql.sh \
-    && rm /usr/local/sbin/postgresql.sh \
+    && /postgresql.sh \
+    && rm /postgresql.sh \
     && echo "exit 0" > /usr/sbin/policy-rc.d \
     && sed -i "s/Requires=network.target postgresql-cluster@9.6-main.service ulp-go.service/Requires=network.target postgresql-cluster@9.6-main.service/" /lib/systemd/system/unifi-core.service \
     && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml
 
-VOLUME ["/srv", "/data"]
+COPY files/ubnt-tools /sbin/ubnt-tools
+
+VOLUME ["/srv", "/data", "/persistent"]
 
 CMD ["/lib/systemd/systemd"]
