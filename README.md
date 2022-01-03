@@ -15,6 +15,7 @@ docker run -d --name unifi-protect-arm64  \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
     -v /storage/srv:/srv \
     -v /storage/data:/data \
+    -v /storage/persistent:/persistent \
     --network host \
     markdegroot/unifi-protect-arm64:latest
 ```

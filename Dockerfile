@@ -40,7 +40,6 @@ RUN apt-get update \
     && sed -i 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf \
     && rm -rf /var/lib/apt/lists/*
 
-COPY files/ubnt-tools /sbin/ubnt-tools
 COPY put-deb-files-here/*.deb files/postgresql.sh /
 COPY put-version-file-here/version /usr/lib/version
 
@@ -56,6 +55,8 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && echo "exit 0" > /usr/sbin/policy-rc.d \
     && sed -i "s/Requires=network.target postgresql-cluster@9.6-main.service ulp-go.service/Requires=network.target postgresql-cluster@9.6-main.service/" /lib/systemd/system/unifi-core.service \
     && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml
+
+COPY files/ubnt-tools /sbin/ubnt-tools
 
 VOLUME ["/srv", "/data"]
 

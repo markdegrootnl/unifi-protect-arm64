@@ -8,6 +8,7 @@ services:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /storage/srv:/srv
       - /storage/data:/data
+      - /storage/persistent:/persistent
     restart: unless-stopped
     tmpfs:
       - /run
