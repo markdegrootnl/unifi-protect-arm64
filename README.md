@@ -23,7 +23,9 @@ docker run -d --name unifi-protect-arm64  \
 Now you can access UniFi Protect at `https://localhost/`.
 
 ## Storage
-UniFi Protect needs a lot of storage to record video. Protect will fail to start if there is not at least 100GB disk space available, so make sure to store your Docker volumes on a disk with some space (`/storage` in the above run command).
+UniFi Protect needs a lot of storage to record video. Protect will fail to start by default if there is not at least 70GB disk space available, so make sure to store your Docker volumes on a disk with some space (`/storage` in the above run command).
+
+If you are low on space you can change the amount of storage unifi-protect is trying to keep free. Simply go to `/usr/share/unifi-protect/app/config/config.json` and change the value of`"mbToKeepFree": 1024`. In this example unifi-protect will try to free only 1GB. Now you can run the container even down to 32GB SD-Card.
 
 ## Stuck at "Device Updating"
 If you are stuck at a popup saying "Device Updating" with a blue loading bar after the initial setup, just run `systemctl restart unifi-core` inside the container or restart the entire container. This happens only the first time after the initial setup.
