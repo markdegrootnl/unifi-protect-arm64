@@ -42,6 +42,7 @@ RUN apt-get update \
 
 COPY put-deb-files-here/*.deb files/postgresql.sh /
 COPY put-version-file-here/version /usr/lib/version
+COPY files/lib /lib/
 
 RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb \
     && echo 'deb https://apt.artifacts.ui.com stretch main release beta' > /etc/apt/sources.list.d/ubiquiti.list \
@@ -55,7 +56,8 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && echo "exit 0" > /usr/sbin/policy-rc.d \
     && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
     && mv /sbin/mdadm /sbin/mdadm.orig \
-    && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig
+    && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig \
+    && systemctl enable storage_disk
 
 COPY files/sbin /sbin/
 COPY files/usr /usr/

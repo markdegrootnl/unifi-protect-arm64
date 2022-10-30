@@ -2,7 +2,7 @@ version: '3'
 
 services:
   unifi-protect:
-    image: markdegroot/unifi-protect-arm64
+    image: markdegroot/unifi-protect-arm64:2.1.2
     container_name: unifi-protect
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -10,7 +10,7 @@ services:
       - /storage/data:/data
       - /storage/persistent:/persistent
     environment:
-      - STORAGE_DISK=/dev/sdb1
+      - STORAGE_DISK=/dev/sda1
     restart: unless-stopped
     tmpfs:
       - /run
