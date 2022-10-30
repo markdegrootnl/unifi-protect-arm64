@@ -9,6 +9,8 @@ services:
       - /storage/srv:/srv
       - /storage/data:/data
       - /storage/persistent:/persistent
+    environment:
+      - STORAGE_DISK=/dev/sdb1
     restart: unless-stopped
     tmpfs:
       - /run

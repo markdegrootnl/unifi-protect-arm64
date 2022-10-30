@@ -19,7 +19,7 @@ RUN apt-get update \
         mdadm \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -44,7 +44,7 @@ COPY put-deb-files-here/*.deb files/postgresql.sh /
 COPY put-version-file-here/version /usr/lib/version
 
 RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb \
-    && echo 'deb https://apt.artifacts.ui.com stretch main release' > /etc/apt/sources.list.d/ubiquiti.list \
+    && echo 'deb https://apt.artifacts.ui.com stretch main release beta' > /etc/apt/sources.list.d/ubiquiti.list \
     && chmod 666 /etc/apt/sources.list.d/ubiquiti.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install /*.deb unifi-protect \
@@ -53,11 +53,13 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && /postgresql.sh \
     && rm /postgresql.sh \
     && echo "exit 0" > /usr/sbin/policy-rc.d \
-    && sed -i "s/Requires=network.target postgresql-cluster@9.6-main.service ulp-go.service/Requires=network.target postgresql-cluster@9.6-main.service/" /lib/systemd/system/unifi-core.service \
-    && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml
+    && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
+    && mv /sbin/mdadm /sbin/mdadm.orig \
+    && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig
 
-COPY files/ubnt-tools /sbin/ubnt-tools
+COPY files/sbin /sbin/
+COPY files/usr /usr/
 
-VOLUME ["/srv", "/data"]
+VOLUME ["/srv", "/data", "/persistent"]
 
 CMD ["/lib/systemd/systemd"]
