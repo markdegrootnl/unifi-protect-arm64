@@ -13,6 +13,7 @@ fi
 sudo apt-get update
 sudo apt-get -y install curl binwalk dpkg-repack dpkg
 
+rm -rf ${firmware_dir}
 mkdir -p ${firmware_dir}
 cd ${firmware_dir}
 
@@ -24,4 +25,17 @@ dpkg-query --admindir=_${firmware_filename}.extracted/squashfs-root/var/lib/dpkg
 while read pkg; do
   dpkg-repack --root=_${firmware_filename}.extracted/squashfs-root/ --arch=arm64 ${pkg}
 done < packages.txt
+
+cp -p _${firmware_filename}.extracted/squashfs-root/usr/lib/version ./version
+
+# Remove unused packages
+rm ble-http-transport*.deb \
+   kmod*.deb \
+   linux-image*.deb \
+   ubnt-rpsd*.deb \
+   ustd*.deb
+
+# Remove unused firmware files
+rm -rf _${firmware_filename}.extracted
+rm ${firmware_filename}
 

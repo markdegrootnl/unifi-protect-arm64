@@ -65,6 +65,21 @@ TimeoutStartSec=0
 WantedBy=multi-user.target
 ```
 
+## Issues with remote access
+
+There is a known issue that remote access to your UNVR (via the Ubnt cloud) will not work with the console unless the primary network interface is named `enp0s2`. To achieve this on a Raspberry Pi 4, create the `/etc/systemd/network/99-enp0s2.link` file with the below content, replacing `xx:xx:xx:xx:xx:xx` with your actual MAC address, and then reboot.
+
+```
+[Match]
+MACAddress=xx:xx:xx:xx:xx:xx
+
+[Link]
+Name=enp0s2
+
+[Network]
+DHCP=yes
+```
+
 ## Build Instructions
 
 The image can be build from the GitHub repo https://github.com/snowsnoot/unifi-unvr-arm64
