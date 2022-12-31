@@ -1,4 +1,4 @@
-# Unifi UNVR with UniFi Protect for ARM64
+# UniFi UNVR with UniFi Protect for ARM64
 
 This image is tested running on a Raspberry Pi 4 8GB model. To run it, use the `docker-compose.yml` below or alternatively run with the `docker run` example below. Persistent storage is under `/storage` and can be any POSIX mountpoint, for example NFS.
 
