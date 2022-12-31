@@ -80,6 +80,19 @@ Name=enp0s2
 DHCP=yes
 ```
 
+## Issues running Systemd inside Docker
+
+If you're getting the following error (or any systemd error):
+```
+Failed to create /init.scope control group: Read-only file system
+Failed to allocate manager object: Read-only file system
+[!!!!!!] Failed to allocate manager object.
+Exiting PID 1...
+```
+Boot the system with kernel parameter `systemd.unified_cgroup_hierarchy=0`
+
+See: https://github.com/moby/moby/issues/42275
+
 ## Build Instructions
 
 The image can be build from the GitHub repo https://github.com/snowsnoot/unifi-unvr-arm64
