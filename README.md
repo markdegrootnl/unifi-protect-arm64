@@ -12,7 +12,6 @@ docker run -d --name unifi-unvr  \
     --tmpfs /run \
     --tmpfs /run/lock \
     --tmpfs /tmp \
-    -v '/var/run/dbus:/var/run/dbus' \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
     -v /storage/srv:/srv \
     -v /storage/data:/data \
@@ -34,7 +33,6 @@ services:
       - '/run/lock'
       - '/tmp'
     volumes:
-      - '/var/run/dbus:/var/run/dbus'
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
       - '/storage/srv:/srv'
       - '/storage/data:/data'
