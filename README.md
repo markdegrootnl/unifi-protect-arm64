@@ -15,6 +15,7 @@ docker run -d --name unifi-unvr  \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
     -v /storage/srv:/srv \
     -v /storage/data:/data \
+    -v /storage/video:/srv/unifi-protect/video \
     -v /storage/persistent:/persistent \
     --network host \
     snowsnoot/unifi-unvr:latest
@@ -36,6 +37,7 @@ services:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
       - '/storage/srv:/srv'
       - '/storage/data:/data'
+      - '/storage/video:/srv/unifi-protect/video'
       - '/storage/persistent:/persistent'
     network_mode: 'host'
     restart: unless-stopped

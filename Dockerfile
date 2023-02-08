@@ -50,7 +50,7 @@ COPY static_files/etc /etc/
 COPY static_files/usr /usr/
 COPY static_files/sbin /sbin/
 
-VOLUME ["/srv", "/data", "/persistent"]
+VOLUME ["/srv", "/data", "/data/unifi-protect/video", "/persistent"]
 
 CMD ["/lib/systemd/systemd"]
 
