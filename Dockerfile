@@ -1,4 +1,4 @@
-FROM arm64v8/debian:9
+FROM arm64v8/debian:11
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -17,6 +17,10 @@ RUN apt-get update \
         ca-certificates \
         dirmngr \
         mdadm \
+        iproute2 \
+        ethtool \
+        procps \
+        systemd-timesyncd \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
@@ -35,32 +39,35 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 STOPSIGNAL SIGKILL
 
-RUN apt-get update \
-    && apt-get -y --no-install-recommends install postgresql \
-    && sed -i 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf \
+RUN curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null \
+    && echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" > /etc/apt/sources.list.d/postgresql.list \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install postgresql-14 postgresql-9.6 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY put-deb-files-here/*.deb files/postgresql.sh /
+COPY put-deb-files-here/*.deb /
 COPY put-version-file-here/version /usr/lib/version
 COPY files/lib /lib/
 
 RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb \
-    && echo 'deb https://apt.artifacts.ui.com stretch main release beta' > /etc/apt/sources.list.d/ubiquiti.list \
+    && echo 'deb https://apt.artifacts.ui.com bullseye main release beta' > /etc/apt/sources.list.d/ubiquiti.list \
     && chmod 666 /etc/apt/sources.list.d/ubiquiti.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install /*.deb unifi-protect \
     && rm -f /*.deb \
     && rm -rf /var/lib/apt/lists/* \
-    && /postgresql.sh \
-    && rm /postgresql.sh \
     && echo "exit 0" > /usr/sbin/policy-rc.d \
     && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
     && mv /sbin/mdadm /sbin/mdadm.orig \
     && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig \
-    && systemctl enable storage_disk
+    && systemctl enable storage_disk dbpermissions\
+    && pg_dropcluster --stop 9.6 main \
+    && sed -i 's/rm -f/rm -rf/' /sbin/pg-cluster-upgrade \
+    && sed -i 's/OLD_DB_CONFDIR=.*/OLD_DB_CONFDIR=\/etc\/postgresql\/9.6\/main/' /sbin/pg-cluster-upgrade
 
 COPY files/sbin /sbin/
 COPY files/usr /usr/
+COPY files/etc /etc/
 
 VOLUME ["/srv", "/data", "/persistent"]
 

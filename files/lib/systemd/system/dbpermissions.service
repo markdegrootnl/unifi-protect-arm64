@@ -1,0 +1,14 @@
+[Unit]
+Description=Set database permissions
+Before=postgresql-cluster-14-main-upgrade.service postgresql-cluster-14-protect-upgrade.service
+After=local-fs.target sysinit.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=chown -R postgres:postgres /data/postgresql
+ExecStart=chown -R postgres:postgres /srv/postgresql
+ExecStart=chown -R postgres:postgres /etc/postgresql
+
+[Install]
+WantedBy=postgresql-cluster-14-main-upgrade.service postgresql-cluster-14-protect-upgrade.service

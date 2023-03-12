@@ -26,7 +26,7 @@ Now you can access UniFi Protect at `https://localhost/`.
 ## Storage
 UniFi Protect needs a lot of storage to record video. Protect will fail to start if there is not at least 100GB disk space available, so make sure to store your Docker volumes on a disk with some space (`/storage` in the above run command).
 
-Optional: Update the env variable `STORAGE_DISK` to your disk to see storage uses inside UniFi Protect.
+Optional: Update the env variable `STORAGE_DISK` to your disk to see disk usage inside UniFi Protect.
 
 ## Stuck at "Device Updating"
 If you are stuck at a popup saying "Device Updating" with a blue loading bar after the initial setup, just run `systemctl restart unifi-core` inside the container or restart the entire container. This happens only the first time after the initial setup.
@@ -38,6 +38,18 @@ Build the image using:
 ```bash
 docker build -t markdegroot/unifi-protect-arm64 .
 ```
+## Issues with remote access
+There is a known issue that remote access to your UNVR (via the Ubnt cloud) will not work with the console unless the primary network interface is named `enp0s2`. To achieve this, **on your host machine** create the file `/etc/systemd/network/98-enp0s2.link` with the content below, replacing `xx:xx:xx:xx:xx:xx` with your actual MAC address.
+```
+[Match]
+MACAddress=xx:xx:xx:xx:xx:xx
+
+[Link]
+Name=enp0s2
+```
+Make sure to update your network settings to reflect the new interface name. To apply the settings, run `sudo update-initramfs -u` and reboot your host machine.
+
+Thanks: https://github.com/snowsnoot/unifi-unvr-arm64#issues-with-remote-access
 
 ## Issues running Systemd inside Docker
 If you're getting the following error (or any systemd error):
