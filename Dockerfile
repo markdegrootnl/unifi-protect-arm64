@@ -64,7 +64,8 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && pg_dropcluster --stop 9.6 main \
     && sed -i 's/rm -f/rm -rf/' /sbin/pg-cluster-upgrade \
     && sed -i 's/OLD_DB_CONFDIR=.*/OLD_DB_CONFDIR=\/etc\/postgresql\/9.6\/main/' /sbin/pg-cluster-upgrade
-
+    && chmod 666 /etc/timezone /etc/localtime
+    
 COPY files/sbin /sbin/
 COPY files/usr /usr/
 COPY files/etc /etc/
