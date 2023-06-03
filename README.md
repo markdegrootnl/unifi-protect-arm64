@@ -23,6 +23,24 @@ docker run -d --name unifi-protect  \
 
 Now you can access UniFi Protect at `https://localhost/`.
 
+## Running ARM64 on x86 machines
+Thanks to Docker, we can now run ARM64 on x86 machines. You can read more about that [here](https://docs.docker.com/build/building/multi-platform/)
+In a nutshell:
+  * Enable ARM64 on your machine: 
+```
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+Note: It seems the changes are temporary and I always have to execute this command after reboot. 
+
+  * Set `systemd.unified_cgroup_hierarchy=0` as kernel boot param and reboot. You can check if worked by `cat /proc/cmdline`, it should show up there.
+  * `docker-compose up -d
+
+
+TODO: 
+ * Redirect systemd logs to docker-compose logs
+ * Figure out a way to run without `privileged=true` 
+ * Make arm64 persistent without running the command all the time after boot
+ * Build using github actions ?
 ## Storage
 UniFi Protect needs a lot of storage to record video. Protect will fail to start if there is not at least 100GB disk space available, so make sure to store your Docker volumes on a disk with some space (`/storage` in the above run command).
 

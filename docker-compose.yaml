@@ -2,16 +2,26 @@ version: '3'
 
 services:
   unifi-protect:
-    image: markdegroot/unifi-protect-arm64:2.2.6
+    image: justatest
+    build:
+      context: .
+      dockerfile: Dockerfile.patch
     container_name: unifi-protect
+    platform: linux/arm64/v8
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /storage/srv:/srv
-      - /storage/data:/data
-      - /storage/persistent:/persistent
-    environment:
-      - STORAGE_DISK=/dev/sda1
+      - /etc/localtime:/etc/localtime
+      - ${PWD}/unifi-protect/srv:/srv
+      - ${PWD}/unifi-protect/data:/data
+      - ${PWD}/unifi-protect/storage/persistent:/persistent
+    #environment:
+    # - STORAGE_DISK=/dev/sda1
     restart: unless-stopped
+    cap_add:
+      - dac_read_search
+      - sys_admin
+    security_opt:
+      - apparmor=unconfined
     tmpfs:
       - /run
       - /run/lock
