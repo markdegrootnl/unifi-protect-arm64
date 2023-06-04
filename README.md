@@ -25,6 +25,19 @@ Now you can access UniFi Protect at `https://localhost/`.
 
 ## Running ARM64 on x86 machines
 Thanks to Docker, we can now run ARM64 on x86 machines. You can read more about that [here](https://docs.docker.com/build/building/multi-platform/)
+
+As you can see the container says `aarch64` while my host says `x86_64`:
+```
+[user@zou:~/unifi-protect-arm64]$ docker exec -it unifi-protect /bin/bash
+root@bam:/# uname -a
+Linux bam 5.15.113 #1-NixOS SMP Wed May 24 16:36:55 UTC 2023 aarch64 GNU/Linux
+root@bam:/# 
+exit
+
+[user@zou:~/unifi-protect-arm64]$ uname -a
+Linux zou 5.15.113 #1-NixOS SMP Wed May 24 16:36:55 UTC 2023 x86_64 GNU/Linux
+```
+
 In a nutshell:
   * Enable ARM64 on your machine: 
 ```
@@ -33,8 +46,26 @@ docker run --privileged --rm tonistiigi/binfmt --install all
 Note: It seems the changes are temporary and I always have to execute this command after reboot. 
 
   * Set `systemd.unified_cgroup_hierarchy=0` as kernel boot param and reboot. You can check if worked by `cat /proc/cmdline`, it should show up there.
-  * `docker-compose up -d
+  * `docker-compose up -d`
+  * Wait, about 2 to 5 minutes and then you should be able to connect to https://localhost and configure it
 
+Debugging:
+```
+docker-compose exec  unifi-protect /bin/bash
+journactl -xf
+systemctl status unifi-core
+systemctl status unifi-protect
+```
+
+Logs can be found at this location:
+```
+# Inside container:
+/data/ulp-go/log/ 
+/data/unifi-core/logs/
+# Same, just host level:
+unifi-protect/data/ulp-go/log
+unifi-protect/data/unifi-core/logs
+```
 
 TODO: 
  * Redirect systemd logs to docker-compose logs
