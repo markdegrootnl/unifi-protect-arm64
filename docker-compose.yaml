@@ -2,7 +2,7 @@ version: '3'
 
 services:
   unifi-protect:
-    image: justatest
+    image: unifi-patch
     build:
       context: .
       dockerfile: Dockerfile.patch

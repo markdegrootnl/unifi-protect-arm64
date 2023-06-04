@@ -1,0 +1,8 @@
+FROM markdegroot/unifi-protect-arm64:latest
+
+# this is just a patch to prevent the unifi-core service stopping every 2 minutes because it hits the systemd timeout
+RUN sed -i -e 's/Restart=always/Restart=always\nTimeoutStartSec=600/g' /lib/systemd/system/unifi-core.service \
+ && sed -i -e 's/TimeoutStartSec=180/TimeoutStartSec=600/g' /lib/systemd/system/unifi-protect.service \
+ && sed -i -e 's/#ForwardToConsole=no/ForwardToConsole=yes/g' /etc/systemd/journald.conf \
+ && mkdir -p /data/unifi-core/logs/ \
+ && chmod 777 /persistent
