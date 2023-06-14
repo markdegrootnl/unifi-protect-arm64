@@ -57,7 +57,7 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && rm -f /*.deb \
     && rm -rf /var/lib/apt/lists/* \
     && echo "exit 0" > /usr/sbin/policy-rc.d \
-    && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
+    && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/default.yaml \
     && mv /sbin/mdadm /sbin/mdadm.orig \
     && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig \
     && systemctl enable storage_disk dbpermissions\
